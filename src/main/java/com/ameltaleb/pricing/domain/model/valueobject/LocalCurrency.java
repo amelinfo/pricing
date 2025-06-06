@@ -1,23 +1,16 @@
 package com.ameltaleb.pricing.domain.model.valueobject;
 
-import java.util.Currency;
+import com.ameltaleb.pricing.domain.ports.output.CurrencyValidationPort;
 
 
-public record LocalCurrency(String currencyCode) {
+public record LocalCurrency(String currencyCode, CurrencyValidationPort validator){
     public LocalCurrency {
-        if (currencyCode == null || !isValidCurrency(currencyCode)) {
-            throw new IllegalArgumentException("Invalid currency code");
+        if (!validator.isValid(currencyCode)) {
+                throw new IllegalArgumentException("Invalid currency code");
         }
     }
-
-    private boolean isValidCurrency(String currencyCode) {
-        // TODO Auto-generated method stub
-        try {
-            Currency.getInstance(currencyCode);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    // Shortcut constructor (hides validator dependency)
+    public static LocalCurrency validate(String code, CurrencyValidationPort validator){
+        return new LocalCurrency(code, validator);
     }
-    
 }
