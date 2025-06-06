@@ -10,5 +10,6 @@ public record BrandId(Integer value) {
 
     public Boolean isZaraBrand() {
         return value == 1; // 1 = ZARA
-    }
+    }   
+    
 }
