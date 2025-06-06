@@ -1,7 +1,6 @@
 package com.ameltaleb.pricing.domain.model.aggregate;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.ameltaleb.pricing.domain.model.valueobject.BrandId;

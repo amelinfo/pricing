@@ -1,6 +1,7 @@
 package com.ameltaleb.pricing.domain.model.valueobject;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -11,23 +12,29 @@ import com.ameltaleb.pricing.domain.ports.output.CurrencyValidationPort;
 
 public class LocalCurrencyTest {
 
-    @Test
-    void rejectsInvalidCurrency() {
-        CurrencyValidationPort mockValidator = mock(CurrencyValidationPort.class);
-        when(mockValidator.isValid("XXX")).thenReturn(false);
+    private final CurrencyValidationPort validValidator = code -> code != null && code.matches("[A-Z]{3}");
+    private final CurrencyValidationPort invalidValidator = code -> false;
 
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> LocalCurrency.validate("XXX", mockValidator)
-        );
+    @Test
+    void shouldCreateValidCurrency() {
+        LocalCurrency currency = LocalCurrency.validate("EUR", validValidator);
+        assertEquals("EUR", currency.currencyCode());
     }
 
     @Test
-    void acceptValidCurrency(){
-                CurrencyValidationPort mockValidator = mock(CurrencyValidationPort.class);
-        when(mockValidator.isValid("EUR")).thenReturn(true);
+    void shouldThrowExceptionForInvalidCurrencyCode() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+            LocalCurrency.validate("INVALID", invalidValidator)
+        );
+        assertEquals("Invalid currency code", ex.getMessage());
+    }
 
-        assertDoesNotThrow( ()->LocalCurrency.validate("EUR", mockValidator));
+    @Test
+    void shouldThrowExceptionForNullCurrencyCode() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+            LocalCurrency.validate(null, validValidator)
+        );
+        assertEquals("Invalid currency code", ex.getMessage());
     }
 
 }

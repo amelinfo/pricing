@@ -22,22 +22,21 @@ class BrandIdTest {
     }
 
     @Test
-    void rejectsNullBrandId() {
-        assertThrows(IllegalArgumentException.class, () -> new BrandId(null));
-    }
-
-    // ---- Record Behavior ----
-    @Test
-    void hasValueEquality() {
-        BrandId id1 = new BrandId(1);
-        BrandId id2 = new BrandId(1);
-        assertEquals(id1, id2);
-        assertEquals(id1.hashCode(), id2.hashCode());
+    void shouldThrowExceptionIfValueIsNull() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> new BrandId(null));
+        assertEquals("Brand ID must be positive", ex.getMessage());
     }
 
     @Test
-    void hasToString() {
-        BrandId brandId = new BrandId(1);
-        assertEquals("BrandId[value=1]", brandId.toString());
+    void shouldNotBeZaraIfIdIsDifferent() {
+        BrandId brandId = new BrandId(2);
+        assertEquals(2, brandId.value());
+        assertFalse(brandId.isZaraBrand());
+    }
+
+    @Test
+    void shouldThrowExceptionIfValueIsZeroOrNegative() {
+        assertThrows(IllegalArgumentException.class, () -> new BrandId(0));
+        assertThrows(IllegalArgumentException.class, () -> new BrandId(-5));
     }
 }
