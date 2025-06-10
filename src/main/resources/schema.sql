@@ -1,15 +1,15 @@
 DROP TABLE IF EXISTS prices;
 
-CREATE TABLE prices (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    brand_id BIGINT NOT NULL,
-    start_date TIMESTAMP NOT NULL,
-    end_date TIMESTAMP NOT NULL,
-    price_list INT NOT NULL,
-    product_id BIGINT NOT NULL,
-    priority INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    currency VARCHAR(3) NOT NULL
+CREATE TABLE PRICES (
+    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    BRAND_ID INT NOT NULL,
+    PRODUCT_ID INT NOT NULL,
+    START_DATE TIMESTAMP NOT NULL,
+    END_DATE TIMESTAMP NOT NULL,
+    PRICE_LIST INT NOT NULL,
+    PRIORITY INT NOT NULL,
+    PRICE DECIMAL(10, 2) NOT NULL,
+    CURR VARCHAR(3) NOT NULL
 );
 
 CREATE INDEX idx_prices_product_brand_dates ON prices (product_id, brand_id, start_date, end_date);

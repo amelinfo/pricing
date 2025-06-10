@@ -33,19 +33,23 @@ class PriceRangeTest {
         assertThrows(IllegalArgumentException.class, () -> new PriceRange(start, null));
     }
 
-    @Test
-    void shouldContainDateInsideRange() {
-        PriceRange range = new PriceRange(start, end);
-        LocalDateTime date = LocalDateTime.of(2020, 6, 14, 12, 0);
-        assertTrue(range.contains(date));
+     @Test
+    void overlaps_whenRangesOverlap_returnsTrue() {
+        PriceRange range1 = new PriceRange(start, end);
+        PriceRange range2 = new PriceRange(start.minusHours(1), start.plusHours(1));
+        assertTrue(range1.overlaps(range2));
     }
 
     @Test
-    void shouldNotContainDateOutsideRange() {
+    void overlaps_whenRangesDontOverlap_returnsFalse() {
+        PriceRange range1 = new PriceRange(start, start.plusHours(2));
+        PriceRange range2 = new PriceRange(start.plusHours(3), start.plusHours(4));
+        assertFalse(range1.overlaps(range2));
+    }
+
+    @Test
+    void overlaps_throwsOnNullInput() {
         PriceRange range = new PriceRange(start, end);
-        LocalDateTime before = start.minusMinutes(1);
-        LocalDateTime after = end.plusMinutes(1);
-        assertFalse(range.contains(before));
-        assertFalse(range.contains(after));
+        assertThrows(NullPointerException.class, () -> range.overlaps(null));
     }
 }
