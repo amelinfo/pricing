@@ -1,6 +1,7 @@
 package com.ameltaleb.pricing.domain.model.valueobject;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public record PriceRange(LocalDateTime startDate, LocalDateTime endDate) {
     public PriceRange {
@@ -9,8 +10,9 @@ public record PriceRange(LocalDateTime startDate, LocalDateTime endDate) {
         }
     }
 
-    // Domain behavior
-    public boolean contains(LocalDateTime date) {
-        return !date.isBefore(startDate) && !date.isAfter(endDate);
+    public boolean overlaps(PriceRange other) {
+        Objects.requireNonNull(other, "Other price range cannot be null");
+        return !this.startDate.isAfter(other.endDate()) && 
+               !this.endDate.isBefore(other.startDate());
     }
 }
