@@ -59,4 +59,21 @@ class PriceServiceTest {
 
         assertTrue(ex.getMessage().contains("conflicts with existing price"));
     }
+
+/*         @Test
+    void testScenario1_HighestPriorityAt10AM() {
+        String date = "2020-06-14 10:00";
+        when(mockPort.findByBrandIdAndProductIdAndDate(any(), any(), eq(date)))
+            .thenReturn(List.of(
+                testPrice(0, 35.50),
+                testPrice( 1, 25.45)
+            ));
+
+        Price result = service.findApplicablePrice(date, 1, 35455);
+        assertEquals(35.50, result.amount());
+    }
+
+        private Price testPrice(int priceList, double price) {
+        return new Price(new BrandId(1), new ProductId(35455), new PriceRange(LocalDateTime.parse("2020-06-14T00:00:00"), LocalDateTime.parse("2020-12-31T23:59:59")), priceList, priceList, null, null);
+    } */
 }
