@@ -1,8 +1,10 @@
 package com.ameltaleb.pricing.application.usecase;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 import com.ameltaleb.pricing.domain.model.aggregate.Price;
 import com.ameltaleb.pricing.domain.model.valueobject.BrandId;
@@ -10,6 +12,7 @@ import com.ameltaleb.pricing.domain.model.valueobject.ProductId;
 import com.ameltaleb.pricing.domain.ports.input.PriceInputPort;
 import com.ameltaleb.pricing.domain.ports.output.PriceOutputPort;
 
+@Service
 public class GetPriceUseCase implements PriceInputPort {
     
     private final PriceOutputPort priceOutputPort;
@@ -20,19 +23,12 @@ public class GetPriceUseCase implements PriceInputPort {
     
     @Override
     public Optional<Price> findApplicablePrice(
-        String applicationDate,
+        LocalDateTime applicationDate,
         ProductId productId,
         BrandId brandId
     ) {
-        // 1. Fetch all applicable prices
-        List<Price> prices = priceOutputPort.findByBrandIdAndProductIdAndDate(
-            brandId,
-            productId,
-            applicationDate
-        );
-        
-        // 2. Apply business rule: Select highest priority price
-        return prices.stream()
+        return priceOutputPort.findByBrandIdAndProductIdAndDate(brandId, productId, applicationDate)
+            .stream()
             .max(Comparator.comparing(Price::priority));
     }
 }

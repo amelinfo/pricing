@@ -1,7 +1,10 @@
 package com.ameltaleb.pricing.infra.persistence.mapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
 
 import com.ameltaleb.pricing.domain.model.aggregate.Price;
 import com.ameltaleb.pricing.domain.model.valueobject.BrandId;
@@ -10,15 +13,18 @@ import com.ameltaleb.pricing.domain.model.valueobject.PriceRange;
 import com.ameltaleb.pricing.domain.model.valueobject.ProductId;
 import com.ameltaleb.pricing.domain.ports.output.CurrencyValidationPort;
 import com.ameltaleb.pricing.infra.persistence.entity.PriceEntity;
-import com.ameltaleb.pricing.infra.validation.CurrencyValidatorAdapter;
 
+@Component
 public class PriceEntityMapper {
-    public static CurrencyValidationPort currencyValidator = new CurrencyValidatorAdapter();
+    private final CurrencyValidationPort currencyValidator;
+
+    public PriceEntityMapper(CurrencyValidationPort currencyValidator) {
+        this.currencyValidator = currencyValidator;
+    }
 
     public Price toDomain(PriceEntity entity) {
-         if (entity == null) {
-            throw new NullPointerException("PriceEntity cannot be null");
-        }
+        Objects.requireNonNull(entity, "PriceEntity cannot be null");
+        
         return new Price(
             new BrandId(entity.getBrandId()),
             new ProductId(entity.getProductId()),
@@ -26,20 +32,21 @@ public class PriceEntityMapper {
             entity.getPriceList(),
             entity.getPriority(),
             entity.getPrice(),
-            new LocalCurrency(entity.getCurrency(),currencyValidator)
+            new LocalCurrency(entity.getCurrency(), currencyValidator)
         );
     }
 
     public List<Price> toDomainList(List<PriceEntity> entities) {
-        if (entities == null) {
-            throw new NullPointerException("PriceEntity list cannot be null");
-        }
+        Objects.requireNonNull(entities, "PriceEntity list cannot be null");
+        
         return entities.stream()
             .map(this::toDomain)
             .collect(Collectors.toList());
     }
 
     public PriceEntity toEntity(Price domain) {
+        Objects.requireNonNull(domain, "Price domain object cannot be null");
+        
         PriceEntity entity = new PriceEntity();
         entity.setBrandId(domain.brandId().value());
         entity.setProductId(domain.productId().value());
